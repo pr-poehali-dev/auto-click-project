@@ -1,0 +1,10 @@
+{
+  "tests": [
+    {
+      "name": "Download ZIP",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200
+    }
+  ]
+}
