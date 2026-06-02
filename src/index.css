@@ -1142,6 +1142,240 @@
   flex-shrink: 0;
 }
 
+/* ===== ПОШАГОВАЯ ИНСТРУКЦИЯ ===== */
+
+.ac-progress-bar {
+  background: var(--bg2);
+  border: 1px solid var(--border-neon);
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ac-progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--text-dim);
+}
+
+.ac-progress-count {
+  font-family: var(--font-display);
+  font-size: 13px;
+}
+
+.ac-progress-track {
+  height: 6px;
+  background: rgba(0, 245, 255, 0.08);
+  border-radius: 3px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 245, 255, 0.1);
+}
+
+.ac-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--neon4), var(--neon));
+  box-shadow: 0 0 10px var(--neon);
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+.ac-progress-done {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: #00ff88;
+  letter-spacing: 1px;
+  animation: pulse-done 1.5s infinite;
+}
+
+@keyframes pulse-done {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+/* ШАГИ */
+.ac-step-done {
+  opacity: 0.6;
+}
+
+.ac-step-badge {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 900;
+  flex-shrink: 0;
+}
+
+.ac-step-emoji {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+/* ПОДШАГИ */
+.ac-substeps {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.ac-substep {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.ac-substep-num {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 900;
+  min-width: 20px;
+  margin-top: 1px;
+  flex-shrink: 0;
+}
+
+.ac-substep-content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.ac-substep-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  letter-spacing: 0.5px;
+  width: fit-content;
+  transition: opacity 0.15s;
+}
+
+.ac-substep-link:hover {
+  opacity: 0.8;
+}
+
+.ac-substep-tip {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid;
+  font-size: 12px;
+  line-height: 1.4;
+  margin-bottom: 12px;
+}
+
+.ac-substep-tip svg {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.ac-step-done-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 9px;
+  border: 1px solid;
+  font-family: var(--font-main);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.ac-step-done-btn:hover {
+  filter: brightness(1.2);
+  transform: translateY(-1px);
+}
+
+/* ФИНАЛЬНЫЙ БЛОК */
+.ac-final {
+  position: relative;
+  background: linear-gradient(135deg, #0a1a0a, #0d2d1a);
+  border: 1px solid rgba(0, 255, 136, 0.4);
+  border-radius: 16px;
+  padding: 28px 20px;
+  text-align: center;
+  overflow: hidden;
+}
+
+.ac-final-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at 50% 0%,
+    rgba(0, 255, 136, 0.15) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+.ac-final-emoji {
+  font-size: 48px;
+  margin-bottom: 10px;
+}
+
+.ac-final-title {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 900;
+  color: #00ff88;
+  letter-spacing: 1px;
+  text-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+  margin-bottom: 16px;
+}
+
+.ac-final-steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.ac-final-step {
+  background: rgba(0, 255, 136, 0.1);
+  border: 1px solid rgba(0, 255, 136, 0.3);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #00ff88;
+}
+
+.ac-final-arrow {
+  color: rgba(0, 255, 136, 0.4);
+  font-size: 16px;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
