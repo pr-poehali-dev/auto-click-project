@@ -1,84 +1,124 @@
 import { useState } from "react";
 import Icon from "@/components/ui/icon";
 
+const FEATURES = [
+  {
+    icon: "Crosshair",
+    color: "#00f5ff",
+    title: "Точечные касания",
+    desc: "Кликер нажимает только в указанную точку. Джойстик, кнопки атаки и другие зоны экрана работают как обычно — кликер им не мешает.",
+  },
+  {
+    icon: "Layers",
+    color: "#ffbe0b",
+    title: "Несколько точек",
+    desc: "Можно добавить до 10 точек одновременно. Например: одна точка собирает ресурсы, другая нажимает кнопку атаки.",
+  },
+  {
+    icon: "Zap",
+    color: "#8338ec",
+    title: "Скорость 1–50 кликов/сек",
+    desc: "Слайдер регулирует частоту. 1 клик в секунду — медленный фарм. 50 — максимальная скорость для быстрых действий.",
+  },
+  {
+    icon: "Timer",
+    color: "#00ff88",
+    title: "Задержка между кликами",
+    desc: "Дополнительная пауза от 0 до 500 мс между каждым кликом. Помогает обойти защиту от ботов в некоторых играх.",
+  },
+  {
+    icon: "Clock",
+    color: "#ff006e",
+    title: "Автостоп по времени",
+    desc: "Задай время работы: например 5 минут — и кликер сам остановится. Удобно чтобы не держать телефон всё время.",
+  },
+  {
+    icon: "Hash",
+    color: "#3a86ff",
+    title: "Автостоп по количеству",
+    desc: "Кликер остановится после нужного числа кликов. Нужно нажать ровно 100 раз — задай это в настройках.",
+  },
+  {
+    icon: "Eye",
+    color: "#fb5607",
+    title: "Работает поверх игры",
+    desc: "После запуска можно открыть игру — кликер продолжает работать поверх неё невидимо. Настройки доступны в любой момент.",
+  },
+  {
+    icon: "ToggleLeft",
+    color: "#00f5ff",
+    title: "Вкл/выкл каждой точки",
+    desc: "Каждую точку можно отключить отдельно не удаляя её. Удобно когда нужно временно убрать одно из нажатий.",
+  },
+  {
+    icon: "BarChart2",
+    color: "#ffbe0b",
+    title: "Статистика в реальном времени",
+    desc: "Показывает сколько кликов сделано, реальный CPS (кликов в секунду) и время работы прямо во время работы кликера.",
+  },
+  {
+    icon: "Save",
+    color: "#8338ec",
+    title: "Сохранение настроек",
+    desc: "Все точки и настройки сохраняются после закрытия приложения. При следующем запуске всё на месте — настраивать заново не нужно.",
+  },
+  {
+    icon: "Shuffle",
+    color: "#00ff88",
+    title: "Режимы: повтор / по очереди",
+    desc: "Повтор — все точки нажимаются одновременно. По очереди — точки нажимаются поочерёдно одна за другой.",
+  },
+  {
+    icon: "Smartphone",
+    color: "#ff006e",
+    title: "Настройка прямо в игре",
+    desc: "Не нужно выходить из игры. Кликер работает как overlay — переключаешься в него, меняешь настройки, возвращаешься в игру.",
+  },
+];
+
 const STEPS = [
   {
-    num: 1,
-    color: "#00f5ff",
-    title: "Скачай код автокликера",
-    emoji: "📥",
-    substeps: [
-      { text: 'Нажми кнопку \u00ABСкачать\u00BB в верхнем меню этого сайта', img: null },
-      { text: 'Выбери \u00ABСкачать код\u00BB', img: null },
-      { text: "Сохрани ZIP-архив на телефон или компьютер", img: null },
-    ],
-    tip: "Кнопка «Скачать» — в правом верхнем углу страницы сайта",
+    num: 1, color: "#00f5ff", emoji: "📥",
+    title: "Скачай файлы автокликера",
+    desc: "Нажми кнопку «Скачать код» прямо на этой странице (кнопка выше). Сохрани ZIP-архив.",
+    detail: "В скачанном архиве найди папку android-autoclicker — именно её нужно будет загрузить на GitHub.",
   },
   {
-    num: 2,
-    color: "#ffbe0b",
-    title: "Открой GitHub и войди",
-    emoji: "🐙",
-    substeps: [
-      { text: "Открой github.com в браузере", link: "https://github.com", linkText: "Открыть GitHub" },
-      { text: 'Нажми \u00ABSign in\u00BB если есть аккаунт, или \u00ABSign up\u00BB для регистрации (бесплатно)', img: null },
-      { text: "Войди в свой аккаунт", img: null },
-    ],
-    tip: "Регистрация бесплатная, нужен только email",
+    num: 2, color: "#ffbe0b", emoji: "🐙",
+    title: "Создай аккаунт на GitHub",
+    desc: "GitHub — бесплатный сервис для хранения кода. Он будет собирать APK автоматически.",
+    detail: "Зайди на github.com → Sign up → введи email, придумай пароль и имя пользователя. Подтверди email. Всё бесплатно.",
+    link: "https://github.com/signup", linkText: "Зарегистрироваться на GitHub",
   },
   {
-    num: 3,
-    color: "#8338ec",
+    num: 3, color: "#8338ec", emoji: "📁",
     title: "Создай новый репозиторий",
-    emoji: "📁",
-    substeps: [
-      { text: "Нажми на кнопку ниже — откроется форма создания репозитория", link: "https://github.com/new", linkText: "➕ Создать репозиторий" },
-      { text: 'В поле \u00ABRepository name\u00BB напиши любое название, например: autoclicker', img: null },
-      { text: 'Убедись что выбрано \u00ABPublic\u00BB', img: null },
-      { text: 'Нажми зелёную кнопку \u00ABCreate repository\u00BB внизу', img: null },
-    ],
-    tip: null,
+    desc: "Репозиторий — это папка на GitHub куда ты загрузишь файлы кликера.",
+    detail: 'Нажми кнопку ниже → откроется форма → в поле "Repository name" напиши autoclicker → выбери Public → нажми зелёную кнопку "Create repository".',
+    link: "https://github.com/new", linkText: "Создать репозиторий",
   },
   {
-    num: 4,
-    color: "#00ff88",
-    title: "Загрузи файлы автокликера",
-    emoji: "📤",
-    substeps: [
-      { text: 'На странице репозитория нажми \u00ABuploading an existing file\u00BB (синяя ссылка в центре)', img: null },
-      { text: "Распакуй скачанный ZIP и загрузи ТОЛЬКО папку android-autoclicker (перетащи её или нажми choose your files)", img: null },
-      { text: 'Прокрути вниз, нажми зелёную кнопку \u00ABCommit changes\u00BB', img: null },
-    ],
-    tip: "Важно: загружай именно папку android-autoclicker, не весь архив",
+    num: 4, color: "#00ff88", emoji: "📤",
+    title: "Загрузи файлы в репозиторий",
+    desc: "Теперь нужно загрузить папку android-autoclicker в созданный репозиторий.",
+    detail: 'На странице репозитория нажми синюю ссылку "uploading an existing file" → перетащи папку android-autoclicker или нажми "choose your files" → прокрути вниз → нажми "Commit changes".',
   },
   {
-    num: 5,
-    color: "#fb5607",
-    title: "Включи сборку Actions",
-    emoji: "⚙️",
-    substeps: [
-      { text: 'Перейди во вкладку \u00ABActions\u00BB в своём репозитории', img: null },
-      { text: 'Если видишь предупреждение — нажми \u00ABI understand my workflows, go ahead and enable them\u00BB', img: null },
-      { text: "Сборка APK запустится автоматически — жди 15–20 минут", img: null },
-    ],
-    tip: "Если Actions уже запустился — просто жди",
+    num: 5, color: "#fb5607", emoji: "⚙️",
+    title: "Включи автосборку APK",
+    desc: "GitHub Actions — бесплатный инструмент который соберёт APK автоматически после загрузки файлов.",
+    detail: 'Перейди во вкладку "Actions" в репозитории → если видишь предупреждение нажми "I understand my workflows, go ahead and enable them" → сборка запустится сама. Жди 15–20 минут.',
   },
   {
-    num: 6,
-    color: "#ff006e",
-    title: "Скачай готовый APK",
-    emoji: "🎉",
-    substeps: [
-      { text: 'В Actions нажми на завершённую сборку (зелёная галочка ✅)', img: null },
-      { text: 'Прокрути вниз до раздела \u00ABArtifacts\u00BB', img: null },
-      { text: 'Нажми \u00ABAutoClicker-Pro-APK\u00BB — скачается ZIP', img: null },
-      { text: "Распакуй ZIP, установи APK на телефон Android", img: null },
-    ],
-    tip: "Artifacts доступны 30 дней после сборки",
+    num: 6, color: "#ff006e", emoji: "🎉",
+    title: "Скачай и установи APK",
+    desc: "После сборки APK-файл появится в разделе Artifacts — скачай и установи на телефон.",
+    detail: 'Actions → нажми на сборку с зелёной галочкой ✅ → прокрути вниз до "Artifacts" → скачай "AutoClicker-Pro-APK" → распакуй ZIP → установи APK. При первом запуске разреши "Поверх других приложений".',
   },
 ];
 
 export default function Index() {
+  const [tab, setTab] = useState<"features" | "guide" | "faq">("features");
   const [openStep, setOpenStep] = useState<number>(1);
   const [doneSteps, setDoneSteps] = useState<number[]>([]);
 
@@ -87,11 +127,14 @@ export default function Index() {
     if (num < STEPS.length) setOpenStep(num + 1);
   };
 
+  const progress = Math.round((doneSteps.length / STEPS.length) * 100);
+
   return (
     <div className="ac-root">
       <div className="ac-scanlines" />
       <div className="ac-gridbg" />
 
+      {/* HEADER */}
       <header className="ac-header">
         <div className="ac-logo">
           <span>⚡</span>
@@ -99,133 +142,207 @@ export default function Index() {
           <span className="ac-logo-pro">PRO</span>
         </div>
         <div className="ac-badge-android">
-          <Icon name="Smartphone" size={13} />
-          <span>Android APK</span>
+          <Icon name="Smartphone" size={12} />
+          <span>Android</span>
         </div>
       </header>
 
       <main className="ac-main ac-main-guide">
 
-        {/* ПРОГРЕСС */}
-        <div className="ac-progress-bar">
-          <div className="ac-progress-label">
-            <span>ПРОГРЕСС</span>
-            <span className="ac-progress-count" style={{ color: "#00f5ff" }}>
-              {doneSteps.length}/{STEPS.length}
-            </span>
+        {/* HERO */}
+        <div className="ac-hero2">
+          <div className="ac-hero2-text">
+            <div className="ac-hero2-tag">АВТОКЛИКЕР ДЛЯ ANDROID</div>
+            <h1 className="ac-hero2-title">
+              Нажимает за тебя<br />
+              <span className="ac-hero2-accent">прямо в игре</span>
+            </h1>
+            <p className="ac-hero2-desc">
+              Работает поверх любых игр и приложений. Ставишь точку — он нажимает. Джойстик и другие кнопки работают как обычно.
+            </p>
           </div>
-          <div className="ac-progress-track">
-            <div
-              className="ac-progress-fill"
-              style={{ width: `${(doneSteps.length / STEPS.length) * 100}%` }}
-            />
-          </div>
-          {doneSteps.length === STEPS.length && (
-            <div className="ac-progress-done">
-              🎉 APK готов к установке!
+
+          {/* КНОПКА СКАЧАТЬ */}
+          <div className="ac-download-block">
+            <div className="ac-download-title">
+              <Icon name="Download" size={16} />
+              <span>КАК ПОЛУЧИТЬ APK</span>
             </div>
-          )}
+            <div className="ac-download-desc">
+              APK собирается бесплатно через GitHub. Нужно скачать код, загрузить на GitHub — он сам соберёт APK за 15 минут.
+            </div>
+            <div className="ac-download-btns">
+              <a
+                href="https://github.com/new"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="ac-dl-btn-primary"
+              >
+                <Icon name="Github" size={18} />
+                <span>Начать → GitHub</span>
+              </a>
+              <button
+                className="ac-dl-btn-secondary"
+                onClick={() => setTab("guide")}
+              >
+                <Icon name="BookOpen" size={16} />
+                <span>Пошаговая инструкция</span>
+              </button>
+            </div>
+            <div className="ac-download-note">
+              <Icon name="Info" size={12} />
+              <span>Сначала скачай код: в меню сайта нажми <b>⋮ → Скачать → Скачать код</b></span>
+            </div>
+          </div>
         </div>
 
-        {/* ШАГИ */}
-        <div className="ac-steps">
-          {STEPS.map((step) => {
-            const isOpen = openStep === step.num;
-            const isDone = doneSteps.includes(step.num);
+        {/* ТАБЫ */}
+        <div className="ac-tabs">
+          {([
+            { id: "features", label: "Функции", icon: "Zap" },
+            { id: "guide", label: "Инструкция", icon: "BookOpen" },
+            { id: "faq", label: "FAQ", icon: "HelpCircle" },
+          ] as const).map((t) => (
+            <button
+              key={t.id}
+              className={`ac-tab ${tab === t.id ? "ac-tab-active" : ""}`}
+              onClick={() => setTab(t.id)}
+            >
+              <Icon name={t.icon} size={14} />
+              <span>{t.label}</span>
+            </button>
+          ))}
+        </div>
 
-            return (
-              <div
-                key={step.num}
-                className={`ac-step ${isOpen ? "ac-step-open" : ""} ${isDone ? "ac-step-done" : ""}`}
-                style={{ "--step-color": step.color } as React.CSSProperties}
-              >
-                {/* ЗАГОЛОВОК ШАГА */}
-                <div
-                  className="ac-step-header"
-                  onClick={() => setOpenStep(isOpen ? 0 : step.num)}
-                >
-                  <div
-                    className="ac-step-badge"
-                    style={isDone
-                      ? { background: "#00ff88", color: "#001a05" }
-                      : { background: `${step.color}22`, color: step.color, border: `1px solid ${step.color}55` }
-                    }
-                  >
-                    {isDone ? "✓" : step.num}
-                  </div>
-                  <span className="ac-step-emoji">{step.emoji}</span>
-                  <div className="ac-step-title" style={isDone ? { color: "#6b9a7a" } : {}}>
-                    {step.title}
-                  </div>
-                  <Icon
-                    name={isOpen ? "ChevronUp" : "ChevronDown"}
-                    size={16}
-                  />
+        {/* ФУНКЦИИ */}
+        {tab === "features" && (
+          <div className="ac-features-grid">
+            {FEATURES.map((f, i) => (
+              <div key={i} className="ac-feat-card" style={{ "--fc": f.color } as React.CSSProperties}>
+                <div className="ac-feat-icon" style={{ background: `${f.color}18`, color: f.color }}>
+                  <Icon name={f.icon} size={20} />
                 </div>
+                <div className="ac-feat-body">
+                  <div className="ac-feat-title" style={{ color: f.color }}>{f.title}</div>
+                  <div className="ac-feat-desc">{f.desc}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
 
-                {/* СОДЕРЖИМОЕ */}
-                {isOpen && (
-                  <div className="ac-step-body">
-                    <div className="ac-substeps">
-                      {step.substeps.map((sub, si) => (
-                        <div key={si} className="ac-substep">
-                          <div className="ac-substep-num" style={{ color: step.color }}>
-                            {si + 1}
-                          </div>
-                          <div className="ac-substep-content">
-                            <span>{sub.text}</span>
-                            {"link" in sub && sub.link && (
-                              <a
-                                href={sub.link}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="ac-substep-link"
-                                style={{ borderColor: `${step.color}66`, color: step.color, background: `${step.color}11` }}
-                              >
-                                <Icon name="ExternalLink" size={12} />
-                                {sub.linkText}
-                              </a>
-                            )}
-                          </div>
-                        </div>
-                      ))}
+        {/* ИНСТРУКЦИЯ */}
+        {tab === "guide" && (
+          <div className="ac-guide">
+            {/* прогресс */}
+            <div className="ac-prog">
+              <div className="ac-prog-row">
+                <span className="ac-prog-label">ПРОГРЕСС</span>
+                <span className="ac-prog-val">{doneSteps.length} / {STEPS.length} шагов</span>
+              </div>
+              <div className="ac-prog-track">
+                <div className="ac-prog-fill" style={{ width: `${progress}%` }} />
+              </div>
+              {doneSteps.length === STEPS.length && (
+                <div className="ac-prog-complete">🎉 Все шаги выполнены — APK готов!</div>
+              )}
+            </div>
+
+            <div className="ac-steps">
+              {STEPS.map((step) => {
+                const isOpen = openStep === step.num;
+                const isDone = doneSteps.includes(step.num);
+                return (
+                  <div
+                    key={step.num}
+                    className={`ac-step ${isOpen ? "ac-step-open" : ""}`}
+                    style={{ "--step-color": step.color } as React.CSSProperties}
+                  >
+                    <div className="ac-step-header" onClick={() => setOpenStep(isOpen ? 0 : step.num)}>
+                      <div className="ac-step-badge" style={
+                        isDone
+                          ? { background: "#00ff88", color: "#001205", border: "none" }
+                          : { background: `${step.color}18`, color: step.color, border: `1px solid ${step.color}44` }
+                      }>
+                        {isDone ? <Icon name="Check" size={14} /> : step.num}
+                      </div>
+                      <span className="ac-step-emoji">{step.emoji}</span>
+                      <div className="ac-step-title">{step.title}</div>
+                      <Icon name={isOpen ? "ChevronUp" : "ChevronDown"} size={15} />
                     </div>
 
-                    {step.tip && (
-                      <div className="ac-substep-tip" style={{ borderColor: `${step.color}44`, background: `${step.color}08`, color: step.color }}>
-                        <Icon name="Lightbulb" size={13} />
-                        <span>{step.tip}</span>
+                    {isOpen && (
+                      <div className="ac-step-body">
+                        <p className="ac-step-desc">{step.desc}</p>
+                        <div className="ac-step-detail">{step.detail}</div>
+
+                        {"link" in step && step.link && (
+                          <a
+                            href={step.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="ac-step-link"
+                            style={{ color: step.color, borderColor: `${step.color}55`, background: `${step.color}10` }}
+                          >
+                            <Icon name="ExternalLink" size={14} />
+                            {step.linkText}
+                          </a>
+                        )}
+
+                        <button
+                          className="ac-step-btn"
+                          style={{ color: step.color, borderColor: `${step.color}55`, background: `${step.color}10` }}
+                          onClick={() => markDone(step.num)}
+                        >
+                          <Icon name="CheckCircle" size={16} />
+                          <span>Сделано — следующий шаг</span>
+                        </button>
                       </div>
                     )}
-
-                    <button
-                      className="ac-step-done-btn"
-                      style={{ background: `${step.color}22`, borderColor: `${step.color}66`, color: step.color }}
-                      onClick={() => markDone(step.num)}
-                    >
-                      <Icon name="Check" size={16} />
-                      <span>Готово, следующий шаг →</span>
-                    </button>
                   </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-
-        {/* ФИНАЛЬНЫЙ БЛОК */}
-        {doneSteps.length === STEPS.length && (
-          <div className="ac-final">
-            <div className="ac-final-glow" />
-            <div className="ac-final-emoji">🚀</div>
-            <div className="ac-final-title">AutoClicker Pro установлен!</div>
-            <div className="ac-final-steps">
-              <div className="ac-final-step">Открой приложение</div>
-              <div className="ac-final-arrow">→</div>
-              <div className="ac-final-step">Установи точки</div>
-              <div className="ac-final-arrow">→</div>
-              <div className="ac-final-step">Нажми Старт</div>
+                );
+              })}
             </div>
+          </div>
+        )}
+
+        {/* FAQ */}
+        {tab === "faq" && (
+          <div className="ac-faq">
+            {[
+              {
+                q: "Это работает на моём телефоне?",
+                a: "Работает на любом Android 8.0 и новее. iPhone (iOS) не поддерживается — Apple запрещает такие приложения.",
+              },
+              {
+                q: "Почему нужен GitHub, нельзя просто скачать APK?",
+                a: "APK нужно скомпилировать специально для Android — этот процесс занимает 15 минут и требует мощный сервер. GitHub предоставляет такой сервер бесплатно.",
+              },
+              {
+                q: "Кликер мешает управлению в игре?",
+                a: "Нет. Кликер нажимает только в строго указанную точку. Все остальные касания — джойстик, кнопки атаки, прыжки — работают как обычно.",
+              },
+              {
+                q: "Могут ли меня забанить в игре?",
+                a: "Теоретически возможно если игра имеет защиту от ботов. Рекомендуем включить случайную задержку в настройках — это делает клики менее похожими на бота.",
+              },
+              {
+                q: "Работает ли кликер когда телефон заблокирован?",
+                a: "Нет — Android не позволяет имитировать касания на заблокированном экране. Экран должен быть включён. Советуем отключить автоблокировку на время использования.",
+              },
+              {
+                q: "Сколько точек можно добавить?",
+                a: "До 10 точек одновременно. Каждую можно включать и выключать отдельно, задавать свою задержку перед нажатием.",
+              },
+            ].map((item, i) => (
+              <div key={i} className="ac-faq-item">
+                <div className="ac-faq-q">
+                  <Icon name="HelpCircle" size={15} />
+                  <span>{item.q}</span>
+                </div>
+                <div className="ac-faq-a">{item.a}</div>
+              </div>
+            ))}
           </div>
         )}
 
