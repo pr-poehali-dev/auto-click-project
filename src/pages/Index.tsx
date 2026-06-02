@@ -1,75 +1,57 @@
 import { useState } from "react";
 import Icon from "@/components/ui/icon";
 
-const STEPS = [
+const REPO_URL = "https://github.com/kivy/kivy";
+const FORK_URL = "https://github.com/kivy/kivy/fork";
+
+// Ссылка на репозиторий автокликера — замени на свой после первого форка
+const AUTOCLICKER_REPO = "https://github.com/topics/autoclicker-android";
+
+const FEATURES = [
+  { icon: "Crosshair", text: "Несколько точек одновременно", color: "#00f5ff" },
+  { icon: "Zap", text: "Скорость 1–50 кликов/сек", color: "#ffbe0b" },
+  { icon: "Timer", text: "Задержка между кликами", color: "#8338ec" },
+  { icon: "Clock", text: "Автостоп по времени", color: "#ff006e" },
+  { icon: "Hash", text: "Автостоп по количеству", color: "#00ff88" },
+  { icon: "Eye", text: "Работает поверх игр", color: "#3a86ff" },
+  { icon: "ToggleLeft", text: "Вкл/выкл каждой точки", color: "#fb5607" },
+  { icon: "BarChart2", text: "CPS статистика live", color: "#00f5ff" },
+  { icon: "Save", text: "Сохранение настроек", color: "#ffbe0b" },
+  { icon: "Layers", text: "Режимы: повтор / по порядку", color: "#8338ec" },
+  { icon: "Smartphone", text: "Настройка прямо в игре", color: "#00ff88" },
+  { icon: "Vibrate", text: "Вибрация при клике", color: "#ff006e" },
+];
+
+const STEPS_FORK = [
   {
-    num: "01",
-    icon: "Github",
-    title: "Создай репозиторий на GitHub",
-    desc: "Зарегистрируйся на github.com и создай новый пустой репозиторий (любое название)",
-    action: "Открыть GitHub",
-    link: "https://github.com/new",
+    icon: "GitFork",
+    title: 'Нажми кнопку "Fork" ниже',
+    desc: "Откроется страница GitHub — нажми зелёную кнопку Fork. Это скопирует репозиторий к тебе.",
     color: "#00f5ff",
   },
   {
-    num: "02",
-    icon: "Upload",
-    title: "Загрузи файлы автокликера",
-    desc: 'Скачай код сайта через меню "Скачать → Скачать код". В репозитории нажми "uploading an existing file" и загрузи папку android-autoclicker',
-    action: null,
-    link: null,
+    icon: "Zap",
+    title: "Actions запустит сборку сам",
+    desc: 'В твоём репозитории перейди во вкладку "Actions" → увидишь сборку APK. Займёт ~15 минут.',
     color: "#ffbe0b",
   },
   {
-    num: "03",
-    icon: "Zap",
-    title: "Actions запустит сборку сам",
-    desc: 'Перейди во вкладку "Actions" в репозитории — сборка APK стартует автоматически. Занимает около 15–20 минут.',
-    action: null,
-    link: null,
-    color: "#8338ec",
-  },
-  {
-    num: "04",
     icon: "Download",
-    title: "Скачай готовый APK",
-    desc: 'В Actions → последний билд → раздел "Artifacts" → скачай файл AutoClicker-Pro-APK',
-    action: null,
-    link: null,
+    title: "Скачай APK из Artifacts",
+    desc: 'Actions → последний билд → раздел "Artifacts" → скачай AutoClicker-Pro-APK.zip → распакуй → установи.',
     color: "#00ff88",
   },
-  {
-    num: "05",
-    icon: "Smartphone",
-    title: "Установи на Android",
-    desc: 'Разреши установку из неизвестных источников → установи APK → при первом запуске дай разрешение "Поверх других приложений"',
-    action: null,
-    link: null,
-    color: "#ff006e",
-  },
-];
-
-const FEATURES = [
-  { icon: "Crosshair", text: "Точечные касания — не мешают джойстику" },
-  { icon: "Layers", text: "Несколько точек одновременно" },
-  { icon: "Zap", text: "Скорость 1–50 кликов в секунду" },
-  { icon: "Timer", text: "Задержка между кликами" },
-  { icon: "Clock", text: "Автостоп по времени или количеству" },
-  { icon: "Eye", text: "Работает поверх любых игр" },
-  { icon: "ToggleLeft", text: "Вкл/выкл каждой точки отдельно" },
-  { icon: "BarChart2", text: "Статистика CPS в реальном времени" },
-  { icon: "Save", text: "Сохранение настроек между сессиями" },
-  { icon: "Smartphone", text: "Настройка прямо в игре" },
 ];
 
 export default function Index() {
-  const [expandedStep, setExpandedStep] = useState<number | null>(0);
+  const [activeTab, setActiveTab] = useState<"guide" | "features" | "install">("guide");
 
   return (
     <div className="ac-root">
       <div className="ac-scanlines" />
       <div className="ac-gridbg" />
 
+      {/* HEADER */}
       <header className="ac-header">
         <div className="ac-logo">
           <span>⚡</span>
@@ -78,7 +60,7 @@ export default function Index() {
         </div>
         <div className="ac-badge-android">
           <Icon name="Smartphone" size={13} />
-          <span>Android APK</span>
+          <span>Android</span>
         </div>
       </header>
 
@@ -86,138 +68,141 @@ export default function Index() {
 
         {/* HERO */}
         <div className="ac-hero">
-          <div className="ac-hero-tag">ПОВЕРХ ЛЮБЫХ ИГР</div>
+          <div className="ac-hero-tag">ПОВЕРХ ЛЮБЫХ ИГР · БЕСПЛАТНО</div>
           <h1 className="ac-hero-title">
-            Настоящий<br />
-            <span className="ac-hero-accent">автокликер</span><br />
-            для Android
+            <span className="ac-hero-accent">AutoClicker</span><br />
+            Pro для Android
           </h1>
           <p className="ac-hero-sub">
-            Работает поверх игр · Точечные касания · Не мешает джойстику
+            Точечные касания · Не мешает джойстику · Настройка в игре
           </p>
 
-          <a
-            href="https://github.com/new"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="ac-btn-hero"
-          >
-            <Icon name="Github" size={20} />
-            <span>Начать сборку APK</span>
-            <Icon name="ArrowRight" size={18} />
-          </a>
-
-          <div className="ac-hero-note">
-            <Icon name="Info" size={13} />
-            <span>Бесплатно · GitHub Actions · ~15–20 минут</span>
-          </div>
-        </div>
-
-        {/* FEATURES */}
-        <div className="ac-section">
-          <div className="ac-section-title">
-            <span className="ac-section-line" />
-            <span>ВОЗМОЖНОСТИ</span>
-            <span className="ac-section-line" />
-          </div>
-          <div className="ac-features">
-            {FEATURES.map((f, i) => (
-              <div key={i} className="ac-feature">
-                <Icon name={f.icon} size={15} />
-                <span>{f.text}</span>
+          {/* ГЛАВНАЯ КНОПКА */}
+          <div className="ac-main-action">
+            <a
+              href="https://github.com/new"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="ac-btn-mega"
+            >
+              <div className="ac-btn-mega-glow" />
+              <Icon name="Github" size={24} />
+              <div className="ac-btn-mega-text">
+                <span className="ac-btn-mega-title">Создать репозиторий</span>
+                <span className="ac-btn-mega-sub">→ загрузи файлы → APK соберётся сам</span>
               </div>
-            ))}
-          </div>
-        </div>
+              <Icon name="ArrowRight" size={20} />
+            </a>
 
-        {/* STEPS */}
-        <div className="ac-section">
-          <div className="ac-section-title">
-            <span className="ac-section-line" />
-            <span>КАК ПОЛУЧИТЬ APK — 5 ШАГОВ</span>
-            <span className="ac-section-line" />
-          </div>
-
-          <div className="ac-steps">
-            {STEPS.map((step, i) => (
-              <div
-                key={i}
-                className={`ac-step ${expandedStep === i ? "ac-step-open" : ""}`}
-                onClick={() => setExpandedStep(expandedStep === i ? null : i)}
-                style={{ "--step-color": step.color } as React.CSSProperties}
-              >
-                <div className="ac-step-header">
-                  <div className="ac-step-num" style={{ color: step.color }}>{step.num}</div>
-                  <div className="ac-step-icon" style={{ background: `${step.color}22`, border: `1px solid ${step.color}44` }}>
-                    <Icon name={step.icon} size={17} />
-                  </div>
-                  <div className="ac-step-title">{step.title}</div>
-                  <Icon name={expandedStep === i ? "ChevronUp" : "ChevronDown"} size={16} />
-                </div>
-                {expandedStep === i && (
-                  <div className="ac-step-body">
-                    <p>{step.desc}</p>
-                    {step.action && step.link && (
-                      <a href={step.link} target="_blank" rel="noopener noreferrer" className="ac-step-link">
-                        <Icon name="ExternalLink" size={13} />
-                        {step.action}
-                      </a>
-                    )}
-                  </div>
-                )}
+            <div className="ac-action-steps">
+              <div className="ac-action-step">
+                <span className="ac-action-num">1</span>
+                <span>Создай репо на GitHub</span>
               </div>
-            ))}
-          </div>
-        </div>
+              <div className="ac-action-arrow">→</div>
+              <div className="ac-action-step">
+                <span className="ac-action-num">2</span>
+                <span>Загрузи папку <b>android-autoclicker</b></span>
+              </div>
+              <div className="ac-action-arrow">→</div>
+              <div className="ac-action-step">
+                <span className="ac-action-num">3</span>
+                <span>Скачай APK из Actions</span>
+              </div>
+            </div>
 
-        {/* ИСХОДНЫЙ КОД */}
-        <div className="ac-section">
-          <div className="ac-section-title">
-            <span className="ac-section-line" />
-            <span>ИСХОДНЫЙ КОД</span>
-            <span className="ac-section-line" />
-          </div>
-
-          <div className="ac-download-card">
-            <div className="ac-dl-icon">📦</div>
-            <div className="ac-dl-info">
-              <div className="ac-dl-name">AutoClicker Pro</div>
-              <div className="ac-dl-meta">main.py · buildozer.spec · GitHub Actions workflow</div>
+            <div className="ac-download-hint">
+              <Icon name="Info" size={13} />
+              <span>Код для загрузки: <b>Скачать → Скачать код</b> в меню сайта сверху</span>
             </div>
           </div>
-
-          <div className="ac-tip">
-            <Icon name="Info" size={14} />
-            <span>
-              Нажми <b>Скачать → Скачать код</b> в меню сайта сверху.
-              Затем загрузи папку <b>android-autoclicker</b> в GitHub репозиторий — сборка запустится автоматически.
-            </span>
-          </div>
         </div>
 
-        {/* ПОСЛЕ УСТАНОВКИ */}
-        <div className="ac-section">
-          <div className="ac-section-title">
-            <span className="ac-section-line" />
-            <span>ПОСЛЕ УСТАНОВКИ</span>
-            <span className="ac-section-line" />
-          </div>
-          <div className="ac-perms">
-            {[
-              ["1", "Разреши установку APK", "Настройки → Безопасность → Неизвестные источники → ВКЛ"],
-              ["2", "Разрешение «Поверх других приложений»", "Приложение само попросит при первом запуске"],
-              ["3", "Открой игру → Alt+Tab в кликер", "Установи точки на вкладке «Зона», нажми Старт — работает поверх"],
-            ].map(([num, title, desc]) => (
-              <div key={num} className="ac-perm">
-                <span className="ac-perm-num">{num}</span>
-                <div>
-                  <div className="ac-perm-title">{title}</div>
-                  <div className="ac-perm-desc">{desc}</div>
+        {/* ТАБЫ */}
+        <div className="ac-tabs">
+          {([
+            { id: "guide", label: "Инструкция", icon: "BookOpen" },
+            { id: "features", label: "Функции", icon: "Zap" },
+            { id: "install", label: "Установка", icon: "Smartphone" },
+          ] as const).map((tab) => (
+            <button
+              key={tab.id}
+              className={`ac-tab ${activeTab === tab.id ? "ac-tab-active" : ""}`}
+              onClick={() => setActiveTab(tab.id)}
+            >
+              <Icon name={tab.icon} size={14} />
+              <span>{tab.label}</span>
+            </button>
+          ))}
+        </div>
+
+        {/* ИНСТРУКЦИЯ */}
+        {activeTab === "guide" && (
+          <div className="ac-section">
+            <div className="ac-steps">
+              {STEPS_FORK.map((step, i) => (
+                <div key={i} className="ac-step ac-step-open" style={{ "--step-color": step.color } as React.CSSProperties}>
+                  <div className="ac-step-header" style={{ cursor: "default" }}>
+                    <div className="ac-step-num" style={{ color: step.color }}>0{i + 1}</div>
+                    <div className="ac-step-icon" style={{ background: `${step.color}22`, border: `1px solid ${step.color}44`, color: step.color }}>
+                      <Icon name={step.icon} size={17} />
+                    </div>
+                    <div className="ac-step-title">{step.title}</div>
+                  </div>
+                  <div className="ac-step-body">
+                    <p>{step.desc}</p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
+
+            <div className="ac-tip">
+              <Icon name="AlertCircle" size={14} />
+              <span>
+                После форка включи Actions: вкладка <b>Actions</b> → кнопка <b>"I understand my workflows, go ahead and enable them"</b>
+              </span>
+            </div>
           </div>
-        </div>
+        )}
+
+        {/* ФУНКЦИИ */}
+        {activeTab === "features" && (
+          <div className="ac-section">
+            <div className="ac-features ac-features-3">
+              {FEATURES.map((f, i) => (
+                <div key={i} className="ac-feature" style={{ borderColor: `${f.color}22` }}>
+                  <div className="ac-feature-icon" style={{ color: f.color, background: `${f.color}15` }}>
+                    <Icon name={f.icon} size={15} />
+                  </div>
+                  <span>{f.text}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* УСТАНОВКА */}
+        {activeTab === "install" && (
+          <div className="ac-section">
+            <div className="ac-perms">
+              {[
+                ["1", "#00f5ff", "Скачай APK из GitHub Actions", "Actions → последний билд → Artifacts → AutoClicker-Pro-APK.zip → распакуй"],
+                ["2", "#ffbe0b", "Разреши установку APK", "Настройки → Безопасность → Установка из неизвестных источников → ВКЛ"],
+                ["3", "#8338ec", "Разрешение «Поверх других приложений»", "Приложение попросит само при первом запуске — нажми Разрешить"],
+                ["4", "#00ff88", "Открой игру, потом вернись в кликер", "Поставь точки во вкладке «Зона» прямо на координаты игры"],
+                ["5", "#ff006e", "Нажми Старт — играй!", "Кликер работает поверх игры. Можно переключаться и менять настройки на лету"],
+              ].map(([num, color, title, desc]) => (
+                <div key={num} className="ac-perm" style={{ borderColor: `${color}22` }}>
+                  <span className="ac-perm-num" style={{ color, textShadow: `0 0 10px ${color}` }}>{num}</span>
+                  <div>
+                    <div className="ac-perm-title">{title}</div>
+                    <div className="ac-perm-desc">{desc}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
       </main>
     </div>
